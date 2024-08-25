@@ -1,3 +1,4 @@
+import "dotenv/config"; // Load environment variables from .env
 import express from "express";
 
 import bookRouter from "./routes/bookRoutes";

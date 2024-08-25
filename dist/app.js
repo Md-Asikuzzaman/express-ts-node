@@ -1,1 +1,18 @@
-"use strict";var O=Object.create;var m=Object.defineProperty;var S=Object.getOwnPropertyDescriptor;var $=Object.getOwnPropertyNames;var E=Object.getPrototypeOf,G=Object.prototype.hasOwnProperty;var v=(t,e,o,s)=>{if(e&&typeof e=="object"||typeof e=="function")for(let r of $(e))!G.call(t,r)&&r!==o&&m(t,r,{get:()=>e[r],enumerable:!(s=S(e,r))||s.enumerable});return t};var M=(t,e,o)=>(o=t!=null?O(E(t)):{},v(e||!t||!t.__esModule?m(o,"default",{value:t,enumerable:!0}):o,t));var c=M(require("express"));var b=require("express");var g=(t,e)=>{let o=t.body;e.status(200).json(o)},h=(t,e)=>{e.status(200).json({message:"all books"})},f=(t,e)=>{let o=t.params.id;e.status(200).json({message:`get book by => ${o}`})},y=(t,e)=>{let o=t.body,s=t.params.id;e.status(200).json({book:o,id:s})},R=(t,e)=>{let o=t.params.id;e.status(200).json({message:`delete book by => ${o}`})};var n=(0,b.Router)();n.post("/books",g);n.get("/books",h);n.get("/books/:id",f);n.patch("/books/:id",y);n.delete("/books/:id",R);var k=n;var N=require("express");var i=require("sequelize");var A=require("sequelize"),B=new A.Sequelize("passport","root","",{host:"localhost",dialect:"mysql"});B.sync({alter:!0}).then(()=>console.log("Database synchronized")).catch(t=>console.error("Error synchronizing database:",t));var x=B;var p=class extends i.Model{};p.init({name:{type:i.DataTypes.STRING,allowNull:!1},email:{type:i.DataTypes.STRING,allowNull:!1,unique:!0}},{sequelize:x,tableName:"authors"});var a=p;var q=require("sequelize"),j=async(t,e)=>{let{email:o,name:s}=t.body,r=await a.create({email:o,name:s});e.status(201).json(r)},w=async(t,e)=>{let o=await a.findAll();e.status(200).json(o)},T=async(t,e)=>{let o=t.params.id,s=await a.findByPk(o);if(!s)return e.status(404).json({message:"user not found."});e.status(200).json(s)},I=async(t,e)=>{let{name:o,email:s}=t.body,r=t.params.id,l=await a.findByPk(r);if(!l)return e.status(404).json({message:"user not found."});if(await a.findOne({where:{email:s,id:{[q.Op.ne]:r}}}))return e.status(400).json({message:"Email is already in use"});await l.update({name:o,email:s}),e.json({message:"Author updated successfully",author:l})},z=async(t,e)=>{let o=t.params.id,s=await a.findByPk(o);if(!s)return e.status(404).json({message:"user not found."});await s.destroy(),e.json({message:"Author deleted successfully"})};var u=(0,N.Router)();u.post("/authors",j);u.get("/authors",w);u.get("/authors/:id",T);u.patch("/authors/:id",I);u.delete("/authors/:id",z);var D=u;var d=(0,c.default)(),P=process.env.PORT||8080;d.use(c.default.json());d.use(c.default.urlencoded({extended:!0}));d.use("/api",k);d.use("/api",D);d.listen(P,()=>{console.log(`listening on ${P}`)});
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+require("dotenv/config"); // Load environment variables from .env
+const express_1 = __importDefault(require("express"));
+const bookRoutes_1 = __importDefault(require("./routes/bookRoutes"));
+const authorRoutes_1 = __importDefault(require("./routes/authorRoutes"));
+const app = (0, express_1.default)();
+const port = process.env.PORT || 8080;
+app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
+app.use("/api", bookRoutes_1.default);
+app.use("/api", authorRoutes_1.default);
+app.listen(port, () => {
+    console.log(`listening on ${port}`);
+});

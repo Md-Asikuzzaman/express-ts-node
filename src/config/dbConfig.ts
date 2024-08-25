@@ -1,9 +1,16 @@
 import { Sequelize } from "sequelize";
 
-// Initialize Sequelize with your database credentials
-const sequelize = new Sequelize("passport", "root", "", {
-  host: "localhost",
+const database = process.env.DB_NAME || "mydb";
+const username = process.env.DB_USER || "root";
+const password = process.env.DB_PASSWORD || "my-secret-pw";
+const host = process.env.DB_HOST || "localhost";
+const port = parseInt(process.env.DB_PORT || "3306", 10);
+
+const sequelize = new Sequelize(database, username, password, {
+  host: host,
   dialect: "mysql",
+  port: port,
+  logging: false, // Set to true if you want to see SQL queries
 });
 
 // Test the connection
